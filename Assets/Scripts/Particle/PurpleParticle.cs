@@ -1,0 +1,46 @@
+using Unity.VisualScripting;
+using UnityEngine;
+
+public class PurpleParticle : Particle
+{
+    [SerializeField] private float explosionForce = 500f;
+    [SerializeField] private float explosionRadius = 3f;
+    private void OnCollisionEnter2D(Collision2D collision)
+    {    
+        if(collision.gameObject.TryGetComponent(out RedParticle redParticle))
+        {
+            ApplyExplosionForce();
+            redParticle.DestroySelf();
+            DestroySelf();
+        }
+    }
+    // applies an explosion force to nearby particles when this particle is destroyed
+    void ApplyExplosionForce()
+    {
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, explosionRadius);
+        foreach (Collider2D collider in colliders)
+        {
+            if (collider.gameObject == this.gameObject) continue;
+
+            if (collider.TryGetComponent(out Particle particle))
+            {
+                Vector2 direction = particle.transform.position - transform.position;
+                float distance = direction.magnitude;
+
+                if (distance > 0)
+                {
+                    direction.Normalize();
+                    // Calculate perpendicular direction (90 degrees rotated)
+                    Vector2 perpendicularDir = new Vector2(-direction.y, direction.x);
+                    
+                    // Simple linear falloff based on distance
+                    float forceMultiplier = 1f - (distance / explosionRadius);
+                    Vector2 force = perpendicularDir * explosionForce * forceMultiplier;
+
+                    // Apply the force as an instant explosion impulse
+                    particle.rb.AddForce(force, ForceMode2D.Impulse);
+                }
+            }
+        }
+    }
+}
