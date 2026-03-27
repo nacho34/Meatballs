@@ -12,7 +12,7 @@ TagManager:
   - Water
   - UI
   - Balls
-  - 
+  - Ground
   - 
   - 
   - 
@@ -43,3 +43,4 @@ TagManager:
     locked: 0
   m_RenderingLayers:
   - Default
+  - Ground
