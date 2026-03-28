@@ -171,5 +171,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RedParticle
   AttractionRange: 3
   AttractionStrength: 4
-  minSpeed: 2.5
-  forceToApply: 16
+  minSpeed: 3.5
+  forceToApply: 25
