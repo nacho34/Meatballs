@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8502766146200458813}
   - component: {fileID: -6732461699325243000}
   - component: {fileID: -5988857108431816490}
-  m_Layer: 6
+  m_Layer: 11
   m_Name: PurpleParticle
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -14,11 +14,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AdditiveRenderFeature
   m_Active: 1
   settings:
-    additiveMaterial: {fileID: 2100000, guid: 43f022952b7f9d2438ec6d6b7d13f7ab, type: 2}
+    blueMaterial: {fileID: 2100000, guid: 3d1f6bb18155d431f8472faeebfbafa9, type: 2}
+    brownMaterial: {fileID: 2100000, guid: 2de09263a78b642ec9262fe42781a59b, type: 2}
+    greenMaterial: {fileID: 2100000, guid: 711181f829fc44f32871382f60f898ae, type: 2}
+    redMaterial: {fileID: 2100000, guid: d144fd161baad48ac99fd7b570850ac7, type: 2}
+    purpleMaterial: {fileID: 2100000, guid: 43f022952b7f9d2438ec6d6b7d13f7ab, type: 2}
     compositeMaterial: {fileID: 2100000, guid: 6394a8a74feb241c689e85444301f30e, type: 2}
-    layerMask:
+    blueLayer:
+      serializedVersion: 2
+      m_Bits: 256
+    brownLayer:
       serializedVersion: 2
       m_Bits: 64
+    greenLayer:
+      serializedVersion: 2
+      m_Bits: 512
+    redLayer:
+      serializedVersion: 2
+      m_Bits: 1024
+    purpleLayer:
+      serializedVersion: 2
+      m_Bits: 2048
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0

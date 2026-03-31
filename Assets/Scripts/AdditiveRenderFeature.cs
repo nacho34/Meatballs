@@ -9,23 +9,55 @@ public class AdditiveRenderFeature : ScriptableRendererFeature
     // --- Pass 1: renders objects into an intermediate texture ---
     class AdditiveRenderPass : ScriptableRenderPass
     {
-        private Material overrideMaterial;
-        private FilteringSettings filteringSettings;
+        class Variant
+        {
+            public Material material;
+            public FilteringSettings filtering;
+        }
 
-        // The handle is written here so Pass 2 can read it
+        private List<Variant> variants = new List<Variant>();
+
         public TextureHandle intermediateTexture;
 
-        public AdditiveRenderPass(Material material, LayerMask layerMask)
+        public AdditiveRenderPass(Settings settings)
         {
-            overrideMaterial = material;
-            filteringSettings = new FilteringSettings(RenderQueueRange.all, layerMask);
-            filteringSettings.sortingLayerRange = SortingLayerRange.all;
             renderPassEvent = RenderPassEvent.AfterRenderingTransparents;
+
+            variants.Add(new Variant {
+                material = settings.blueMaterial,
+                filtering = new FilteringSettings(RenderQueueRange.all, settings.blueLayer)
+            });
+
+            variants.Add(new Variant {
+                material = settings.brownMaterial,
+                filtering = new FilteringSettings(RenderQueueRange.all, settings.brownLayer)
+            });
+
+            variants.Add(new Variant {
+                material = settings.greenMaterial,
+                filtering = new FilteringSettings(RenderQueueRange.all, settings.greenLayer)
+            });
+
+            variants.Add(new Variant {
+                material = settings.redMaterial,
+                filtering = new FilteringSettings(RenderQueueRange.all, settings.redLayer)
+            });
+
+            variants.Add(new Variant {
+                material = settings.purpleMaterial,
+                filtering = new FilteringSettings(RenderQueueRange.all, settings.purpleLayer)
+            });
+
+            // ensure all sorting layers
+            for (int i = 0; i < variants.Count; i++)
+            {
+                variants[i].filtering.sortingLayerRange = SortingLayerRange.all;
+            }
         }
 
         class PassData
         {
-            public RendererListHandle rendererList;
+            public List<RendererListHandle> rendererLists;
         }
 
         public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData)
@@ -42,32 +74,41 @@ public class AdditiveRenderFeature : ScriptableRendererFeature
             desc.clearColor = Color.clear;
             intermediateTexture = renderGraph.CreateTexture(desc);
 
-            var drawSettings = CreateDrawingSettings(
-                new ShaderTagId("SRPDefaultUnlit"),
-                renderingData,
-                cameraData,
-                lightData,
-                SortingCriteria.CommonTransparent
-            );
-            drawSettings.overrideMaterial = overrideMaterial;
-
-            var rendererListParams = new RendererListParams(
-                renderingData.cullResults,
-                drawSettings,
-                filteringSettings
-            );
-
             using (var builder = renderGraph.AddRasterRenderPass<PassData>("Additive Pass", out var passData))
-            {
-                passData.rendererList = renderGraph.CreateRendererList(rendererListParams);
-                builder.UseRendererList(passData.rendererList);
+{
+                passData.rendererLists = new List<RendererListHandle>();
 
-                // Write to intermediate, NOT the camera color target
+                foreach (var variant in variants)
+                {
+                    var drawSettings = CreateDrawingSettings(
+                        new ShaderTagId("SRPDefaultUnlit"),
+                        renderingData,
+                        cameraData,
+                        lightData,
+                        SortingCriteria.CommonTransparent
+                    );
+
+                    drawSettings.overrideMaterial = variant.material;
+
+                    var rendererListParams = new RendererListParams(
+                        renderingData.cullResults,
+                        drawSettings,
+                        variant.filtering
+                    );
+
+                    var rl = renderGraph.CreateRendererList(rendererListParams);
+                    passData.rendererLists.Add(rl);
+                    builder.UseRendererList(rl);
+                }
+
                 builder.SetRenderAttachment(intermediateTexture, 0);
 
                 builder.SetRenderFunc((PassData data, RasterGraphContext ctx) =>
                 {
-                    ctx.cmd.DrawRendererList(data.rendererList);
+                    foreach (var rl in data.rendererLists)
+                    {
+                        ctx.cmd.DrawRendererList(rl);
+                    }
                 });
             }
         }
@@ -126,9 +167,19 @@ public class AdditiveRenderFeature : ScriptableRendererFeature
     [System.Serializable]
     public class Settings
     {
-        public Material additiveMaterial;
+        public Material blueMaterial;
+        public Material brownMaterial;
+        public Material greenMaterial;
+        public Material redMaterial;
+        public Material purpleMaterial;
+
         public Material compositeMaterial;
-        public LayerMask layerMask;
+
+        public LayerMask blueLayer;
+        public LayerMask brownLayer;
+        public LayerMask greenLayer;
+        public LayerMask redLayer;
+        public LayerMask purpleLayer;
     }
 
     public Settings settings = new Settings();
@@ -138,15 +189,15 @@ public class AdditiveRenderFeature : ScriptableRendererFeature
 
     public override void Create()
     {
-        additivePass = new AdditiveRenderPass(settings.additiveMaterial, settings.layerMask);
+        additivePass = new AdditiveRenderPass(settings);
         compositePass = new CompositePass(settings.compositeMaterial, additivePass);
     }
 
     public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
     {
-        if (settings.additiveMaterial == null || settings.compositeMaterial == null) return;
+        if (settings.compositeMaterial == null) return;
 
-        additivePass = new AdditiveRenderPass(settings.additiveMaterial, settings.layerMask);
+        additivePass = new AdditiveRenderPass(settings);
         compositePass = new CompositePass(settings.compositeMaterial, additivePass);
 
         renderer.EnqueuePass(additivePass);

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: -1499699310937314466}
   - component: {fileID: -7072002415029989795}
   - component: {fileID: -252511456376845267}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: BlueParticle
   m_TagString: Untagged
   m_Icon: {fileID: 0}

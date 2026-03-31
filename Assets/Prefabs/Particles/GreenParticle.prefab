@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 9031301765294841563}
   - component: {fileID: 1489032898446041730}
   - component: {fileID: 6144268694160148397}
-  m_Layer: 6
+  m_Layer: 9
   m_Name: GreenParticle
   m_TagString: Untagged
   m_Icon: {fileID: 0}

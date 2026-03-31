@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3726493380078206729}
   - component: {fileID: 8775104573961274029}
   - component: {fileID: 1832173816787873481}
-  m_Layer: 6
+  m_Layer: 10
   m_Name: RedParticle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
