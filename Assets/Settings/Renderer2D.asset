@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-8304481626783704432
+--- !u!114 &-8532658018588618575
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AdditiveRenderFeature
   m_Active: 1
   settings:
-    additiveMaterial: {fileID: 2100000, guid: 36ff868fa250ff54caac8b54d8fa4f3f, type: 2}
+    additiveMaterial: {fileID: 2100000, guid: 43f022952b7f9d2438ec6d6b7d13f7ab, type: 2}
+    compositeMaterial: {fileID: 2100000, guid: 6394a8a74feb241c689e85444301f30e, type: 2}
     layerMask:
       serializedVersion: 2
       m_Bits: 64
@@ -43,12 +44,12 @@ MonoBehaviour:
     probeSamplingDebugTexture: {fileID: 2800000, guid: 24ec0e140fb444a44ab96ee80844e18e, type: 3}
     probeVolumeBlendStatesCS: {fileID: 0}
   m_RendererFeatures:
-  - {fileID: -8304481626783704432}
-  m_RendererFeatureMap: 909acc9ff58dc08c
+  - {fileID: -8532658018588618575}
+  m_RendererFeatureMap: b1102374bde89589
   m_UseNativeRenderPass: 0
   m_LayerMask:
     serializedVersion: 2
-    m_Bits: 183
+    m_Bits: 4294967295
   m_TransparencySortMode: 0
   m_TransparencySortAxis: {x: 0, y: 1, z: 0}
   m_HDREmulationScale: 1
