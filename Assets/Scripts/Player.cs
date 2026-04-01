@@ -9,7 +9,8 @@ public class Player : MonoBehaviour
 {
     Rigidbody2D m_Rigidbody;
     private PlayerInput playerInput;
-    private SpriteRenderer spriteRenderer;
+    public Camera mainCamera;
+    private Collider2D playerCollider;
     public float acceleration = 1000f; // Acceleration value
 
     // Velocity limits and deceleration
@@ -22,12 +23,14 @@ public class Player : MonoBehaviour
     private float jumpTime = 0f;
     private bool jumpStarted = false;
 
-    public Transform bat;
+    public Transform joint;
+    public Bat bat;
 
     // Flag to prevent overlapping attack animations
-    private bool isAttacking = false;
+    public bool isAttacking = false;
 
     private InputAction _move;
+    private InputAction _look;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -43,12 +46,23 @@ public class Player : MonoBehaviour
     {
         m_Rigidbody = GetComponent<Rigidbody2D>();
         playerInput = GetComponent<PlayerInput>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        playerCollider = GetComponent<Collider2D>();
         _move = playerInput.actions["Move"];
+        _look = playerInput.actions["Look"];
     }
 
     void FixedUpdate()
     {
+        // Update bat position
+        if (!isAttacking)
+        {
+            Vector2 mousePos = _look.ReadValue<Vector2>();
+            Vector3 worldMousePos = mainCamera.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, 0));
+            Vector2 cursorToPlayerVector = worldMousePos - transform.position;
+            float angle = Mathf.Atan2(cursorToPlayerVector.y, cursorToPlayerVector.x) * Mathf.Rad2Deg;
+            joint.rotation = Quaternion.Euler(0, 0, angle - 45); // Rotate bat to face cursor
+        }
+        
         Vector2 moveInput = _move.ReadValue<Vector2>();
 
         // Observe upward acceleration request.
@@ -100,7 +114,7 @@ public class Player : MonoBehaviour
 
     bool isGrounded()
     {
-        return Physics2D.Raycast(transform.position, Vector2.down, spriteRenderer.bounds.size.y/2, LayerMask.GetMask("Water"));
+        return Physics2D.Raycast(transform.position, Vector2.down, playerCollider.bounds.size.y/2 + 0.1f, LayerMask.GetMask("Ground", "BrownBalls", "BlueBalls", "RedBalls", "GreenBalls", "PurpleBalls"));
     }
 
     // Called when the attack input is triggered
@@ -109,6 +123,7 @@ public class Player : MonoBehaviour
         if (!isAttacking)
         {
             isAttacking = true;
+            bat.ResetHitList(); // Reset hit list for new swing
             StartCoroutine(AttackAnimation());
         }
     }
@@ -116,31 +131,31 @@ public class Player : MonoBehaviour
     // Coroutine to animate the bat swing: rotate 90 degrees and back over 0.7 seconds
     IEnumerator AttackAnimation()
     {
-        float duration = 0.35f; // Half the total animation time for each phase
+        float duration = 0.2f; // Half the total animation time for each phase
 
         // Phase 1: Rotate bat 90 degrees forward
-        Quaternion startRotation = bat.rotation;
+        Quaternion startRotation = joint.rotation;
         Quaternion targetRotation = startRotation * Quaternion.Euler(0, 0, 90);
         float time = 0;
         while (time < duration)
         {
             time += Time.deltaTime;
-            bat.rotation = Quaternion.Lerp(startRotation, targetRotation, time / duration);
+            joint.rotation = Quaternion.Lerp(startRotation, targetRotation, time / duration);
             yield return null;
         }
-        bat.rotation = targetRotation;
+        joint.rotation = targetRotation;
 
         // Phase 2: Rotate bat back to original position
-        startRotation = bat.rotation;
+        startRotation = joint.rotation;
         targetRotation = startRotation * Quaternion.Euler(0, 0, -90);
         time = 0;
         while (time < duration)
         {
             time += Time.deltaTime;
-            bat.rotation = Quaternion.Lerp(startRotation, targetRotation, time / duration);
+            joint.rotation = Quaternion.Lerp(startRotation, targetRotation, time / duration);
             yield return null;
         }
-        bat.rotation = targetRotation;
+        joint.rotation = targetRotation;
 
         isAttacking = false; // Allow new attacks after animation completes
     }

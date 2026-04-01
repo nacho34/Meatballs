@@ -331,16 +331,70 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 12
       objectReference: {fileID: 0}
+    - target: {fileID: 7053629712877829816, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9038359187114465798, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
+      propertyPath: bat
+      value: 
+      objectReference: {fileID: 1268778124}
+    - target: {fileID: 9038359187114465798, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
+      propertyPath: joint
+      value: 
+      objectReference: {fileID: 289928974}
+    - target: {fileID: 9038359187114465798, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
+      propertyPath: mainCamera
+      value: 
+      objectReference: {fileID: 86075913}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2735391421666625409, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1268778124}
   m_SourcePrefab: {fileID: 100100000, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
 --- !u!4 &227225763 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 48219011898148518, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
   m_PrefabInstance: {fileID: 227225762}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &289928974 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5750840424522530224, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
+  m_PrefabInstance: {fileID: 227225762}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &424085534 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9038359187114465798, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
+  m_PrefabInstance: {fileID: 227225762}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19eb70bac6f54d143b8512732b0c9b95, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Player
+--- !u!1 &1268778119 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2735391421666625409, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
+  m_PrefabInstance: {fileID: 227225762}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1268778124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1268778119}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77347f133a8c4f24098b717cd8e96550, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Bat
+  player: {fileID: 424085534}
+  hitForce: 150
 --- !u!1 &1462085356
 GameObject:
   m_ObjectHideFlags: 0
@@ -623,7 +677,7 @@ GameObject:
   - component: {fileID: 1579901862}
   - component: {fileID: 1579901861}
   - component: {fileID: 1579901860}
-  m_Layer: 4
+  m_Layer: 7
   m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
