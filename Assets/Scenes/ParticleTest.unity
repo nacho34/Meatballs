@@ -403,6 +403,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Bat
   player: {fileID: 424085534}
   hitForce: 150
+  SendDirection: {x: 0, y: 0}
 --- !u!1 &1462085356
 GameObject:
   m_ObjectHideFlags: 0

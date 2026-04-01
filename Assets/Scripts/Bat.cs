@@ -1,37 +1,54 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+[RequireComponent(typeof(Collider2D))]
 public class Bat : MonoBehaviour
 {
     public Player player; // Reference to the player GameObject
     public float hitForce = 10f; // Adjustable force amount
+    public Vector2 SendDirection;
+    private Collider2D batCollider;
     private List<GameObject> hitObjects = new List<GameObject>();
+
+    void Awake()
+    {
+        batCollider = GetComponent<Collider2D>();
+    }
 
     public void ResetHitList()
     {
         hitObjects.Clear();
     }
 
-    void OnTriggerEnter2D(Collider2D collision)
+    void FixedUpdate()
     {
-        if (player.isAttacking && !hitObjects.Contains(collision.gameObject)) // Check if the player is currently attacking and not already hit
+        if (player == null || batCollider == null || !player.isAttacking)
         {
-            hitObjects.Add(collision.gameObject); // Add to hit list
-            
-            // Check if colliding with any ball layer
+            return;
+        }
+
+        Bounds bounds = batCollider.bounds;
+        Collider2D[] collisions = Physics2D.OverlapBoxAll(bounds.center, bounds.size, 0f);
+
+        foreach (Collider2D collision in collisions)
+        {
+            if (collision == null || collision == batCollider || hitObjects.Contains(collision.gameObject))
+            {
+                continue;
+            }
+
             int layer = collision.gameObject.layer;
             if (LayerMask.LayerToName(layer).Contains("Balls")) // Assuming layers end with "Balls"
             {
-                // Get direction from bat to ball
-                Vector2 direction = (collision.transform.position - player.transform.position).normalized;
-                
+                hitObjects.Add(collision.gameObject); // Add to hit list
+
                 // Apply force to the ball in the direction of the ball (from bat to ball)
                 Rigidbody2D ballRb = collision.gameObject.GetComponent<Rigidbody2D>();
                 if (ballRb != null)
                 {
-                    ballRb.AddForce(direction * hitForce, ForceMode2D.Impulse);
+                    ballRb.AddForce(SendDirection * hitForce, ForceMode2D.Impulse);
                 }
             }
-        }
+        } 
     }
 }

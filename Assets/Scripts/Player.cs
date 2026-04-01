@@ -111,7 +111,28 @@ public class Player : MonoBehaviour
 
     bool isGrounded()
     {
-        return Physics2D.Raycast(transform.position, Vector2.down, playerCollider.bounds.size.y/2 + 0.1f, LayerMask.GetMask("Ground", "BrownBalls", "BlueBalls", "RedBalls", "GreenBalls", "PurpleBalls"));
+        Vector2 origin = playerCollider.bounds.center;
+        float rayDistance = playerCollider.bounds.extents.y + 0.1f;
+        int groundMask = LayerMask.GetMask("Ground", "BrownBalls", "BlueBalls", "RedBalls", "GreenBalls", "PurpleBalls");
+
+        Vector2[] rayDirections = new Vector2[]
+        {
+            Vector2.down,
+            Quaternion.Euler(0f, 0f, -22.5f) * Vector2.down,
+            Quaternion.Euler(0f, 0f, 22.5f) * Vector2.down,
+            Quaternion.Euler(0f, 0f, -45f) * Vector2.down,
+            Quaternion.Euler(0f, 0f, 45f) * Vector2.down
+        };
+
+        foreach (Vector2 rayDirection in rayDirections)
+        {
+            if (Physics2D.Raycast(origin, rayDirection, rayDistance, groundMask))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     // Called when the attack input is triggered
@@ -119,6 +140,10 @@ public class Player : MonoBehaviour
     {
         if (!isAttacking)
         {
+            Vector2 mousePos = _look.ReadValue<Vector2>();
+            Vector3 worldMousePos = mainCamera.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, 0));
+            Vector2 cursorToPlayerVector = worldMousePos - transform.position;
+            bat.SendDirection = cursorToPlayerVector.normalized; // Set the direction for the bat to send the ball
             isAttacking = true;
             bat.ResetHitList(); // Reset hit list for new swing
             StartCoroutine(AttackAnimation());
