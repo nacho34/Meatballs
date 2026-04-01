@@ -11,7 +11,9 @@ public class Player : MonoBehaviour
     private PlayerInput playerInput;
     public Camera mainCamera;
     private Collider2D playerCollider;
-    public float acceleration = 1000f; // Acceleration value
+    public float jumpAcceleration = 1000f; // Acceleration value
+    public float walkAcceleration = 100f; // Acceleration value for horizontal movement
+    public float sideDeceleration = 150f; // Deceleration value for horizontal movement when no input is present
 
     // Velocity limits and deceleration
     public float maxSidewaysSpeed = 50f;
@@ -31,16 +33,6 @@ public class Player : MonoBehaviour
 
     private InputAction _move;
     private InputAction _look;
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-    }
 
     void Awake()
     {
@@ -96,14 +88,19 @@ public class Player : MonoBehaviour
             }
         }
 
-        // Instant sideways deceleration when no horizontal input.
+        // Gradual sideways deceleration when no horizontal input.
         if (Mathf.Abs(moveInput.x) <= instantSideDecelerationThreshold)
         {
             moveInput.x = 0f;
-            m_Rigidbody.linearVelocity = new Vector2(0f, m_Rigidbody.linearVelocity.y);
+            float newSidewaysSpeed = Mathf.MoveTowards(m_Rigidbody.linearVelocity.x, 0f, sideDeceleration * Time.fixedDeltaTime);
+            m_Rigidbody.linearVelocity = new Vector2(newSidewaysSpeed, m_Rigidbody.linearVelocity.y);
         }
 
-        m_Rigidbody.AddForce(moveInput * m_Rigidbody.mass * acceleration * Time.fixedDeltaTime, ForceMode2D.Impulse);
+        Vector2 horizontalForce = new Vector2(moveInput.x, 0f) * m_Rigidbody.mass * walkAcceleration * Time.fixedDeltaTime;
+        Vector2 verticalForce = new Vector2(0f, moveInput.y) * m_Rigidbody.mass * jumpAcceleration * Time.fixedDeltaTime;
+
+        m_Rigidbody.AddForce(horizontalForce, ForceMode2D.Impulse);
+        m_Rigidbody.AddForce(verticalForce, ForceMode2D.Impulse);
 
         // Enforce maximum velocity limits.
         Vector2 clampedVelocity = m_Rigidbody.linearVelocity;

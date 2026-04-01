@@ -347,6 +347,14 @@ PrefabInstance:
       propertyPath: mainCamera
       value: 
       objectReference: {fileID: 86075913}
+    - target: {fileID: 9038359187114465798, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
+      propertyPath: sideDeceleration
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 9038359187114465798, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
+      propertyPath: walkAcceleration
+      value: 50
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
