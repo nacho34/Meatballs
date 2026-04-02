@@ -4,7 +4,6 @@ using System.Collections;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(PlayerInput))]
-[RequireComponent(typeof(SpriteRenderer))]
 public class Player : MonoBehaviour
 {
     Rigidbody2D m_Rigidbody;
