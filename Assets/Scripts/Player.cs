@@ -180,4 +180,12 @@ public class Player : MonoBehaviour
 
         isAttacking = false; // Allow new attacks after animation completes
     }
+
+    protected virtual void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.TryGetComponent(out Particle particle) || collision.gameObject.TryGetComponent(out Player player))
+        {
+            GetComponent<RandomAudioPlayer>().PlayRandomOneShot();
+        }
+    }
 }
