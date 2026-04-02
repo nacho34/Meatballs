@@ -48,6 +48,11 @@ public class AdditiveRenderFeature : ScriptableRendererFeature
                 filtering = new FilteringSettings(RenderQueueRange.all, settings.purpleLayer)
             });
 
+            variants.Add(new Variant {
+                material = settings.whiteMaterial,
+                filtering = new FilteringSettings(RenderQueueRange.all, settings.whiteLayer)
+            });
+
             // ensure all sorting layers
             for (int i = 0; i < variants.Count; i++)
             {
@@ -172,6 +177,7 @@ public class AdditiveRenderFeature : ScriptableRendererFeature
         public Material greenMaterial;
         public Material redMaterial;
         public Material purpleMaterial;
+        public Material whiteMaterial;
 
         public Material compositeMaterial;
 
@@ -180,6 +186,7 @@ public class AdditiveRenderFeature : ScriptableRendererFeature
         public LayerMask greenLayer;
         public LayerMask redLayer;
         public LayerMask purpleLayer;
+        public LayerMask whiteLayer;
     }
 
     public Settings settings = new Settings();

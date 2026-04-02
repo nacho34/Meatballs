@@ -22,9 +22,9 @@ public class PurpleParticle : Particle
         {
             if (collider.gameObject == this.gameObject) continue;
 
-            if (collider.TryGetComponent(out Particle particle))
+            if (collider.TryGetComponent(out Particle particle) || collider.TryGetComponent(out Player player))
             {
-                Vector2 direction = particle.transform.position - transform.position;
+                Vector2 direction = collider.transform.position - transform.position;
                 float distance = direction.magnitude;
 
                 if (distance > 0)
@@ -38,7 +38,7 @@ public class PurpleParticle : Particle
                     Vector2 force = perpendicularDir * explosionForce * forceMultiplier;
 
                     // Apply the force as an instant explosion impulse
-                    particle.rb.AddForce(force, ForceMode2D.Impulse);
+                    collider.gameObject.GetComponent<Rigidbody2D>().AddForce(force, ForceMode2D.Impulse);
                 }
             }
         }
