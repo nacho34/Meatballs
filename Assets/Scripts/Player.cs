@@ -1,11 +1,13 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
+using TMPro;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(PlayerInput))]
 public class Player : MonoBehaviour
 {
+    public static Player Instance; 
     Rigidbody2D m_Rigidbody;
     private PlayerInput playerInput;
     public Camera mainCamera;
@@ -15,26 +17,45 @@ public class Player : MonoBehaviour
     public float sideDeceleration = 150f; // Deceleration value for horizontal movement when no input is present
 
     // Velocity limits and deceleration
-    public float maxSidewaysSpeed = 50f;
+    public float maxWalkingSpeed = 50f;
     public float maxJumpSpeed = 200f;
+    public float maxAbsoluteVelocity = 500f;
     public float instantSideDecelerationThreshold = 0.1f;
 
     // Jump cooldown settings
     public float jumpAccelerationWindow = 0.5f; // seconds
     private float jumpTime = 0f;
     private bool jumpStarted = false;
+    private bool canJump = false;
 
     public Transform joint;
     public Bat bat;
 
+    private float MaxElevation = 0;
+    public TextMeshProUGUI MaxElevationText;
+    public TextMeshProUGUI CurrentElevationText;
+
     // Flag to prevent overlapping attack animations
     public bool isAttacking = false;
-
+    public GameObject WallPrefab;
+    public GameObject BackgroundPrefab;
+    private float LastSpawnedWallElevation = 20f;
+    public float LeftWallX;
+    public float RightWallX;
+    public float BackgroundX;
     private InputAction _move;
     private InputAction _look;
 
     void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
         m_Rigidbody = GetComponent<Rigidbody2D>();
         playerInput = GetComponent<PlayerInput>();
         playerCollider = GetComponent<Collider2D>();
@@ -58,8 +79,8 @@ public class Player : MonoBehaviour
 
         // Observe upward acceleration request.
         bool hasVerticalMovement = moveInput.y > 0f;
-
-        if (isGrounded())
+        bool grounded = isGrounded();
+        if (grounded)
         {
             // Reset jump state when grounded.
             jumpStarted = false;
@@ -67,7 +88,7 @@ public class Player : MonoBehaviour
         }
 
         // Start jump window when upward acceleration starts being positive.
-        if (hasVerticalMovement && !jumpStarted)
+        if (hasVerticalMovement && !jumpStarted && grounded)
         {
             jumpStarted = true;
             jumpTime = 0f;
@@ -86,6 +107,10 @@ public class Player : MonoBehaviour
                 }
             }
         }
+        else{
+            // If jump hasn't started, ignore any upward acceleration input.
+            moveInput.y = 0f;
+        }
 
         // Gradual sideways deceleration when no horizontal input.
         if (Mathf.Abs(moveInput.x) <= instantSideDecelerationThreshold)
@@ -93,6 +118,18 @@ public class Player : MonoBehaviour
             moveInput.x = 0f;
             float newSidewaysSpeed = Mathf.MoveTowards(m_Rigidbody.linearVelocity.x, 0f, sideDeceleration * Time.fixedDeltaTime);
             m_Rigidbody.linearVelocity = new Vector2(newSidewaysSpeed, m_Rigidbody.linearVelocity.y);
+        }
+
+        Vector2 currentVelocity = m_Rigidbody.linearVelocity;
+
+        if (moveInput.x != 0f && Mathf.Abs(currentVelocity.x) >= maxWalkingSpeed && Mathf.Sign(moveInput.x) == Mathf.Sign(currentVelocity.x))
+        {
+            moveInput.x = 0f;
+        }
+
+        if (moveInput.y > 0f && currentVelocity.y >= maxJumpSpeed)
+        {
+            moveInput.y = 0f;
         }
 
         Vector2 horizontalForce = new Vector2(moveInput.x, 0f) * m_Rigidbody.mass * walkAcceleration * Time.fixedDeltaTime;
@@ -103,9 +140,14 @@ public class Player : MonoBehaviour
 
         // Enforce maximum velocity limits.
         Vector2 clampedVelocity = m_Rigidbody.linearVelocity;
-        clampedVelocity.x = Mathf.Clamp(clampedVelocity.x, -maxSidewaysSpeed, maxSidewaysSpeed);
-        clampedVelocity.y = Mathf.Min(clampedVelocity.y, maxJumpSpeed);
+        if (clampedVelocity.magnitude > maxAbsoluteVelocity)
+        {
+            clampedVelocity = clampedVelocity.normalized * maxAbsoluteVelocity;
+        }
         m_Rigidbody.linearVelocity = clampedVelocity;
+        // Keep score on the UI 
+        UpdateElevation();
+        SpawnNewWalls();
     }
 
     bool isGrounded()
@@ -186,6 +228,30 @@ public class Player : MonoBehaviour
         if (collision.gameObject.TryGetComponent(out Particle particle) || collision.gameObject.TryGetComponent(out Player player))
         {
             GetComponent<RandomAudioPlayer>().PlayRandomOneShot();
+        }
+    }
+
+    void UpdateElevation()
+    {
+        float elevation = transform.position.y;
+        if (elevation > MaxElevation)
+        {
+            MaxElevation = elevation;
+            MaxElevationText.text = $"Max Elevation: {MaxElevation:F2}";
+        }
+        CurrentElevationText.text = $"Current Elevation: {elevation:F2}";
+    }
+
+    void SpawnNewWalls()
+    {
+        // if player is at the last spawned wall elevation, spawn new walls 50 units above
+        if (transform.position.y > LastSpawnedWallElevation)
+        {
+            Debug.Log("Spawning new walls at elevation: " + (LastSpawnedWallElevation + 50f));
+            Instantiate(WallPrefab, new Vector3(LeftWallX, LastSpawnedWallElevation + 50, 0), Quaternion.identity);
+            Instantiate(WallPrefab, new Vector3(RightWallX, LastSpawnedWallElevation + 50, 0), Quaternion.identity);
+            Instantiate(BackgroundPrefab, new Vector3(BackgroundX, LastSpawnedWallElevation + 50, 0), Quaternion.identity);
+            LastSpawnedWallElevation += 50f;
         }
     }
 }

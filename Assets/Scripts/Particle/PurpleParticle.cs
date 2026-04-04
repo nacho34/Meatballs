@@ -4,9 +4,24 @@ using UnityEngine;
 public class PurpleParticle : Particle
 {
     [SerializeField] private float explosionForce = 500f;
+    [SerializeField] private float bounceForce = 200f;
     [SerializeField] private float explosionRadius = 3f;
+    private float lastBouncedPlayerTime = 0f;
     void OnCollisionEnter2D(Collision2D collision)
-    {    
+    {   if(Time.time - lastBouncedPlayerTime > 0.2f){ // prevent multiple bounces in quick succession
+            if(collision.gameObject.TryGetComponent(out Player player))
+            {
+                Vector2 forceDirection = (Vector2)(player.transform.position - transform.position).normalized;
+                Rigidbody2D playerRb = collision.rigidbody;
+                if (playerRb != null)
+                {
+                    playerRb.AddForce(forceDirection * bounceForce, ForceMode2D.Impulse);
+                    lastBouncedPlayerTime = Time.time; // Update the last bounce time
+                }
+                return;
+            }
+        }
+
         if(collision.gameObject.TryGetComponent(out RedParticle redParticle))
         {
             ApplyExplosionForce();

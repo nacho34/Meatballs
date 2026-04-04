@@ -78,6 +78,7 @@ MonoBehaviour:
   AttractionRange: 5
   AttractionStrength: 1
   explosionForce: 150
+  bounceForce: 13
   explosionRadius: 4.5
 --- !u!33 &-6732461699325243000
 MeshFilter:

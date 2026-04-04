@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,6 +10,7 @@ public abstract class ParticleSpawner : MonoBehaviour
     protected List<Particle> particles = new List<Particle>();
     [SerializeField] protected float spawnInterval = 1f;
     [SerializeField] protected int maxParticles = 25;
+    [SerializeField] protected float activeElevation = -10f;
     protected float lastSpawnTime = 0f; // keep track of this for spawn intervals
     void Start(){
         particleType = particlePrefab.GetComponent<Particle>();
@@ -17,12 +19,25 @@ public abstract class ParticleSpawner : MonoBehaviour
     // Update is called once per frame
     protected virtual void Update()
     {
+        if(Player.Instance.transform.position.y > activeElevation){
+            HandleSpawning();
+        }
+    }
+    protected void HandleSpawning()
+    {
         // spawn a particle each time interval seconds have passed
         if (Time.time - lastSpawnTime >= spawnInterval)
         {
-            // If we've reached max particles, remove the oldest one before spawning a new one
+            // If we've reached max particles, remove the farthest one before spawning a new one
             if(particles.Count >= maxParticles){
-                RemoveParticle(particles[0]);
+                Particle farthestParticle = null;
+                foreach(Particle p in particles){
+                    float verticalDist = Math.Abs(Player.Instance.transform.position.y - p.transform.position.y);
+                    if(farthestParticle == null || verticalDist > Math.Abs(Player.Instance.transform.position.y - farthestParticle.transform.position.y)){
+                        farthestParticle = p;
+                    }
+                }
+                RemoveParticle(farthestParticle);
             }
             // only update last spawn time if we successfully spawned
             if(SpawnParticles()){
