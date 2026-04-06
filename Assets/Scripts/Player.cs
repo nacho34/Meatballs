@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -37,6 +38,11 @@ public class Player : MonoBehaviour
 
     // Flag to prevent overlapping attack animations
     public bool isAttacking = false;
+    // Brown particle clinging mechanics
+    public bool isClinging = false;
+    private HashSet<BrownParticle> clingingParticles = new HashSet<BrownParticle>();
+    private Vector2 clingDirection;
+    [SerializeField] private float clingRadius = 1f;
     public GameObject WallPrefab;
     public GameObject BackgroundPrefab;
     private float LastSpawnedWallElevation = 20f;
@@ -76,6 +82,36 @@ public class Player : MonoBehaviour
         }
         
         Vector2 moveInput = _move.ReadValue<Vector2>();
+
+        // Detect and handle clinging to brown particles
+        clingingParticles.Clear();
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, clingRadius);
+        foreach (var collider in colliders)
+        {
+            if (collider.TryGetComponent(out BrownParticle brown))
+            {
+                clingingParticles.Add(brown);
+                // Apply clinging force towards the brown particle's center
+                Vector2 direction = ((Vector2)(brown.transform.position - transform.position)).normalized;
+                m_Rigidbody.AddForce(direction * brown.clingStrength * Time.fixedDeltaTime);
+            }
+        }
+
+        // Calculate clinging state and direction
+        if (clingingParticles.Count > 0)
+        {
+            Vector2 sum = Vector2.zero;
+            foreach (var brown in clingingParticles)
+            {
+                sum += ((Vector2)(brown.transform.position - transform.position)).normalized;
+            }
+            clingDirection = sum / clingingParticles.Count;
+            isClinging = true;
+        }
+        else
+        {
+            isClinging = false;
+        }
 
         // Observe upward acceleration request.
         bool hasVerticalMovement = moveInput.y > 0f;
@@ -133,7 +169,15 @@ public class Player : MonoBehaviour
         }
 
         Vector2 horizontalForce = new Vector2(moveInput.x, 0f) * m_Rigidbody.mass * walkAcceleration * Time.fixedDeltaTime;
-        Vector2 verticalForce = new Vector2(0f, moveInput.y) * m_Rigidbody.mass * jumpAcceleration * Time.fixedDeltaTime;
+        Vector2 verticalForce;
+        if (isClinging)
+        {
+            verticalForce = clingDirection * moveInput.y * m_Rigidbody.mass * jumpAcceleration * Time.fixedDeltaTime;
+        }
+        else
+        {
+            verticalForce = new Vector2(0f, moveInput.y) * m_Rigidbody.mass * jumpAcceleration * Time.fixedDeltaTime;
+        }
 
         m_Rigidbody.AddForce(horizontalForce, ForceMode2D.Impulse);
         m_Rigidbody.AddForce(verticalForce, ForceMode2D.Impulse);
