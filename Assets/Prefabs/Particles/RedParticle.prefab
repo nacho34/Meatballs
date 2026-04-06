@@ -75,8 +75,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f988ba8e720da24286caa897f9a4a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RedParticle
-  AttractionRange: 3
-  AttractionStrength: 4
+  AttractionRange: 10
+  AttractionStrength: 30
+  chaseRange: 5
+  chaseStrength: 20
+  maxChaseSpeed: 10
   minSpeed: 3.5
   forceToApply: 25
 --- !u!33 &8775104573961274029

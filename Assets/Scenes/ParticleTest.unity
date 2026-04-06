@@ -1225,7 +1225,7 @@ MonoBehaviour:
   particlePrefab: {fileID: 4663822542161693542, guid: b1239fe8c6fc36d45a306580c769c393, type: 3}
   spawnInterval: 4
   maxParticles: 2
-  activeElevation: 60
+  activeElevation: 2
 --- !u!114 &1462085363
 MonoBehaviour:
   m_ObjectHideFlags: 0
