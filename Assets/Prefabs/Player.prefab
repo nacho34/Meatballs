@@ -146,16 +146,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   mainCamera: {fileID: 0}
-  jumpAcceleration: 1000
-  walkAcceleration: 50
-  sideDeceleration: 50
-  maxSidewaysSpeed: 8
-  maxJumpSpeed: 10
+  jumpAcceleration: 160
+  walkAcceleration: 100
+  sideDeceleration: 150
+  maxWalkingSpeed: 7
+  maxJumpSpeed: 11
+  maxAbsoluteVelocity: 30
   instantSideDecelerationThreshold: 0.1
-  jumpAccelerationWindow: 0.5
+  jumpAccelerationWindow: 0.2
   joint: {fileID: 5750840424522530224}
   bat: {fileID: 1750963807019674724}
+  MaxElevationText: {fileID: 0}
+  CurrentElevationText: {fileID: 0}
   isAttacking: 0
+  isClinging: 0
+  clingRadius: 1
+  WallPrefab: {fileID: 8150021885085114894, guid: a2df48cd8d48c814680b053cb0044bee, type: 3}
+  BackgroundPrefab: {fileID: 0}
+  LeftWallX: -23.4885
+  RightWallX: 23.54
+  BackgroundX: 0
 --- !u!23 &1634043371748622705
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -347,7 +357,7 @@ GameObject:
   - component: {fileID: 3975806887821444077}
   - component: {fileID: 6294826163019945949}
   m_Layer: 12
-  m_Name: Dynamic Sprite
+  m_Name: Bat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -362,8 +372,8 @@ Transform:
   m_GameObject: {fileID: 2735391421666625409}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.8, y: 0, z: 0}
-  m_LocalScale: {x: 0.7514179, y: 0.24730714, z: 1.1414}
+  m_LocalPosition: {x: 0.884, y: 0, z: 0}
+  m_LocalScale: {x: 0.85, y: 0.24730714, z: 1.1414}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5750840424522530224}

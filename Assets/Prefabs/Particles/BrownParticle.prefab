@@ -77,7 +77,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BrownParticle
   AttractionRange: 1.5
   AttractionStrength: 3
-  clingStrength: 1000
+  clingStrength: 50
 --- !u!61 &-5638717618499315770
 BoxCollider2D:
   m_ObjectHideFlags: 0

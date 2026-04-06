@@ -42,8 +42,7 @@ public class Player : MonoBehaviour
     public bool isClinging = false;
     private HashSet<BrownParticle> clingingParticles = new HashSet<BrownParticle>();
     private Vector2 clingDirection;
-    [SerializeField] private float clingRadius = 1f;
-    public GameObject WallPrefab;
+    private float clingRadius => playerCollider.bounds.extents.y + 0.1f;    [SerializeField] private float clingStrength = 100f;    public GameObject WallPrefab;
     public GameObject BackgroundPrefab;
     private float LastSpawnedWallElevation = 20f;
     public float LeftWallX;
@@ -91,9 +90,6 @@ public class Player : MonoBehaviour
             if (collider.TryGetComponent(out BrownParticle brown))
             {
                 clingingParticles.Add(brown);
-                // Apply clinging force towards the brown particle's center
-                Vector2 direction = ((Vector2)(brown.transform.position - transform.position)).normalized;
-                m_Rigidbody.AddForce(direction * brown.clingStrength * Time.fixedDeltaTime);
             }
         }
 
@@ -107,6 +103,8 @@ public class Player : MonoBehaviour
             }
             clingDirection = sum / clingingParticles.Count;
             isClinging = true;
+            // Apply fixed clinging force towards the average direction
+            m_Rigidbody.AddForce(clingDirection * clingStrength);
         }
         else
         {
@@ -169,13 +167,14 @@ public class Player : MonoBehaviour
         }
 
         Vector2 horizontalForce = new Vector2(moveInput.x, 0f) * m_Rigidbody.mass * walkAcceleration * Time.fixedDeltaTime;
-        Vector2 verticalForce;
-        if (isClinging)
+        Vector2 verticalForce = Vector2.zero;
+        if (isClinging && moveInput.y > 0f)
         {
-            verticalForce = clingDirection * moveInput.y * m_Rigidbody.mass * jumpAcceleration * Time.fixedDeltaTime;
-        }
-        else
-        {
+            isClinging = false;
+            // Revert fixed clinging force towards the average direction
+            m_Rigidbody.AddForce(-clingDirection * clingStrength);
+            verticalForce = -clingDirection * moveInput.y * m_Rigidbody.mass * jumpAcceleration * Time.fixedDeltaTime;
+        } else {
             verticalForce = new Vector2(0f, moveInput.y) * m_Rigidbody.mass * jumpAcceleration * Time.fixedDeltaTime;
         }
 
@@ -196,6 +195,7 @@ public class Player : MonoBehaviour
 
     bool isGrounded()
     {
+        if (isClinging) return true;
         Vector2 origin = playerCollider.bounds.center;
         float rayDistance = playerCollider.bounds.extents.y + 0.1f;
         int groundMask = LayerMask.GetMask("Ground", "BrownBalls", "BlueBalls", "RedBalls", "GreenBalls", "PurpleBalls");

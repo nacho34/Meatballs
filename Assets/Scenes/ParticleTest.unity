@@ -323,66 +323,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 2735391421666625409, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
-      propertyPath: m_Layer
-      value: 12
-      objectReference: {fileID: 0}
-    - target: {fileID: 3147438443322145041, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
-      propertyPath: m_Mass
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3147438443322145041, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 6200000, guid: a95dd9adbc7ee4a49b4ad004ebb3bc91, type: 2}
-    - target: {fileID: 3147438443322145041, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
-      propertyPath: m_GravityScale
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 7879129015079176382, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.85
-      objectReference: {fileID: 0}
-    - target: {fileID: 7879129015079176382, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.884
-      objectReference: {fileID: 0}
-    - target: {fileID: 9038359187114465798, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
-      propertyPath: bat
-      value: 
-      objectReference: {fileID: 1268778124}
-    - target: {fileID: 9038359187114465798, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
-      propertyPath: joint
-      value: 
-      objectReference: {fileID: 289928974}
-    - target: {fileID: 9038359187114465798, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
-      propertyPath: LeftWallX
-      value: -23.4885
-      objectReference: {fileID: 0}
-    - target: {fileID: 9038359187114465798, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
-      propertyPath: RightWallX
-      value: 23.54
-      objectReference: {fileID: 0}
-    - target: {fileID: 9038359187114465798, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
-      propertyPath: WallPrefab
-      value: 
-      objectReference: {fileID: 8150021885085114894, guid: a2df48cd8d48c814680b053cb0044bee, type: 3}
     - target: {fileID: 9038359187114465798, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
       propertyPath: mainCamera
       value: 
       objectReference: {fileID: 86075913}
-    - target: {fileID: 9038359187114465798, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
-      propertyPath: BackgroundX
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9038359187114465798, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
-      propertyPath: maxJumpSpeed
-      value: 11
-      objectReference: {fileID: 0}
-    - target: {fileID: 9038359187114465798, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
-      propertyPath: maxWalkingSpeed
-      value: 7
-      objectReference: {fileID: 0}
     - target: {fileID: 9038359187114465798, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
       propertyPath: BackgroundPrefab
       value: 
@@ -392,33 +336,9 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1826465925}
     - target: {fileID: 9038359187114465798, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
-      propertyPath: jumpAcceleration
-      value: 160
-      objectReference: {fileID: 0}
-    - target: {fileID: 9038359187114465798, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
-      propertyPath: sideDeceleration
-      value: 150
-      objectReference: {fileID: 0}
-    - target: {fileID: 9038359187114465798, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
-      propertyPath: walkAcceleration
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 9038359187114465798, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
-      propertyPath: maxAbsoluteVelocity
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 9038359187114465798, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
       propertyPath: CurrentElevationText
       value: 
       objectReference: {fileID: 373389505}
-    - target: {fileID: 9038359187114465798, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
-      propertyPath: jumpAccelerationWindow
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 9038359187114465798, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
-      propertyPath: instantSideDecelerationThreshold
-      value: 0.1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -567,11 +487,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &289928974 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5750840424522530224, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
-  m_PrefabInstance: {fileID: 227225762}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &364659658
 GameObject:
   m_ObjectHideFlags: 0
@@ -1188,17 +1103,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1242397912}
   m_CullTransparentMesh: 1
---- !u!114 &1268778124 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1750963807019674724, guid: 5c50ddcb8b0564fcabcf21dd8672428a, type: 3}
-  m_PrefabInstance: {fileID: 227225762}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 77347f133a8c4f24098b717cd8e96550, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Bat
 --- !u!1 &1462085356
 GameObject:
   m_ObjectHideFlags: 0
