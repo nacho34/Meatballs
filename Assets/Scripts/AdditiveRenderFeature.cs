@@ -169,6 +169,73 @@ public class AdditiveRenderFeature : ScriptableRendererFeature
         }
     }
 
+    class OverlaySpritePass : ScriptableRenderPass
+    {
+        FilteringSettings filtering;
+        List<ShaderTagId> shaderTags;
+
+        public OverlaySpritePass()
+        {
+            renderPassEvent = RenderPassEvent.AfterRenderingTransparents + 2;
+
+            filtering = new FilteringSettings(
+                RenderQueueRange.all,
+                LayerMask.GetMask("OverlaySprites")
+            );
+
+            shaderTags = new List<ShaderTagId>()
+            {
+                new ShaderTagId("UniversalForward"),
+                new ShaderTagId("Universal2D"),
+                new ShaderTagId("SRPDefaultUnlit")
+            };
+        }
+
+        class PassData
+        {
+            public RendererListHandle rendererList;
+        }
+
+        public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData)
+        {
+            var renderingData = frameData.Get<UniversalRenderingData>();
+            var cameraData = frameData.Get<UniversalCameraData>();
+            var lightData = frameData.Get<UniversalLightData>();
+            var resourceData = frameData.Get<UniversalResourceData>();
+
+            using (var builder = renderGraph.AddRasterRenderPass<PassData>("Overlay Sprites", out var passData))
+            {
+                builder.AllowPassCulling(false);
+
+                var drawSettings = CreateDrawingSettings(
+                    shaderTags,
+                    renderingData,
+                    cameraData,
+                    lightData,
+                    SortingCriteria.CommonTransparent
+                );
+
+                var rendererListParams = new RendererListParams(
+                    renderingData.cullResults,
+                    drawSettings,
+                    filtering
+                );
+
+                passData.rendererList = renderGraph.CreateRendererList(rendererListParams);
+
+                builder.UseRendererList(passData.rendererList);
+
+                // IMPORTANT: write to camera color
+                builder.SetRenderAttachment(resourceData.activeColorTexture, 0);
+
+                builder.SetRenderFunc((PassData data, RasterGraphContext ctx) =>
+                {
+                    ctx.cmd.DrawRendererList(data.rendererList);
+                });
+            }
+        }
+    }
+
     [System.Serializable]
     public class Settings
     {
@@ -193,11 +260,13 @@ public class AdditiveRenderFeature : ScriptableRendererFeature
 
     AdditiveRenderPass additivePass;
     CompositePass compositePass;
+    OverlaySpritePass overlaySpritePass;
 
     public override void Create()
     {
         additivePass = new AdditiveRenderPass(settings);
         compositePass = new CompositePass(settings.compositeMaterial, additivePass);
+        overlaySpritePass = new OverlaySpritePass();
     }
 
     public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
@@ -206,8 +275,10 @@ public class AdditiveRenderFeature : ScriptableRendererFeature
 
         additivePass = new AdditiveRenderPass(settings);
         compositePass = new CompositePass(settings.compositeMaterial, additivePass);
+        overlaySpritePass = new OverlaySpritePass();
 
         renderer.EnqueuePass(additivePass);
         renderer.EnqueuePass(compositePass);
+        renderer.EnqueuePass(overlaySpritePass);
     }
 }

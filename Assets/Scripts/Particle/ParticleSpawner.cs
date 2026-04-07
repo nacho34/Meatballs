@@ -29,7 +29,7 @@ public abstract class ParticleSpawner : MonoBehaviour
         if (Time.time - lastSpawnTime >= spawnInterval)
         {
             // If we've reached max particles, remove the farthest one before spawning a new one
-            if(particles.Count >= maxParticles){
+            while(particles.Count >= maxParticles){
                 Particle farthestParticle = null;
                 foreach(Particle p in particles){
                     float verticalDist = Math.Abs(Player.Instance.transform.position.y - p.transform.position.y);
@@ -46,11 +46,18 @@ public abstract class ParticleSpawner : MonoBehaviour
         }
     }
 
+    int debugCounter = 0;
+
     protected virtual void FixedUpdate()
     {
         if(particleType.AttractionStrength > 0f){
             ApplyAttractionForces();
         }
+    
+        if(debugCounter % 120 == 0){ // log every 120 frames (2 seconds) to avoid spamming 
+            Debug.Log($"Particle count for {gameObject.name}: {particles.Count}");
+        }
+        debugCounter++;
     }
 
     // Applies mutual attraction forces between all particles of a shared type
