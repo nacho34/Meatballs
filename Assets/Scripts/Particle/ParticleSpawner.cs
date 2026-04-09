@@ -93,12 +93,13 @@ public abstract class ParticleSpawner : MonoBehaviour
 
     // returns true if successful, overriden because each spawner generates particles differently
     protected abstract bool SpawnParticles(); 
-    public void SpawnParticle(Vector2 position)
+    public GameObject SpawnParticle(Vector2 position)
     {
         GameObject newParticle = Instantiate(particlePrefab, position, Quaternion.identity);
         Particle p = newParticle.GetComponent<Particle>();
         p.spawner = this;
         particles.Add(p);
+        return newParticle;
     }
     public void RemoveParticle(Particle particle)
     {

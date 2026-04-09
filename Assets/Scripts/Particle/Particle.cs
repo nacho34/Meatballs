@@ -25,6 +25,7 @@ public abstract class Particle : MonoBehaviour
     }
 
     public void DestroySelf(){
-        spawner.RemoveParticle(this);
+        if (spawner != null)
+            spawner.RemoveParticle(this);
     }
 }

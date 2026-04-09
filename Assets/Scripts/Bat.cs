@@ -6,6 +6,7 @@ public class Bat : MonoBehaviour
 {
     public Player player; // Reference to the player GameObject
     public float hitForce = 10f; // Adjustable force amount
+    public float oceanHitForceMultiplier = 0.2f; // Multiplier for hits against ocean particles
     public Vector2 SendDirection;
     private Collider2D batCollider;
     private List<GameObject> hitObjects = new List<GameObject>();
@@ -44,9 +45,10 @@ public class Bat : MonoBehaviour
 
                 // Apply force to the ball in the direction of the ball (from bat to ball)
                 Rigidbody2D ballRb = collision.gameObject.GetComponent<Rigidbody2D>();
+                float thisParticleHitForce = (collision.gameObject.TryGetComponent(out OceanParticle oceanParticle)) ? hitForce * oceanHitForceMultiplier : hitForce;
                 if (ballRb != null)
                 {
-                    ballRb.AddForce(SendDirection * hitForce, ForceMode2D.Impulse);
+                    ballRb.AddForce(SendDirection * thisParticleHitForce, ForceMode2D.Impulse);
                 }
             }
         } 

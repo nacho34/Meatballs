@@ -13,6 +13,10 @@ public class BlueParticle : Particle
             DestroySelf();
             ParticleManager.Instance.GreenSpawner.SpawnParticle(transform.position);
         }
+        else if (collision.gameObject.TryGetComponent(out OceanParticle oceanParticle))
+        {
+            DestroySelf();
+        }
         else if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
            DestroySelf();
